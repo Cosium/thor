@@ -13,7 +13,8 @@ var session = require(process.argv[2]);
 //
 var masked = process.argv[4] === 'true'
   , binary = process.argv[5] === 'true'
-  , protocol = +process.argv[3] || 13;
+  , protocol = +process.argv[3] || 13
+  , headers = process.argv[6];
 
 process.on('message', function message(task) {
   var now = Date.now();
@@ -40,7 +41,8 @@ process.on('message', function message(task) {
   if (!task.url) return;
 
   var socket = new Socket(task.url, {
-    protocolVersion: protocol
+    protocolVersion: protocol,
+    headers: headers
   });
 
   socket.on('open', function open() {

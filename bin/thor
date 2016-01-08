@@ -6,6 +6,14 @@ var Metrics = require('../metrics')
   , path = require('path')
   , os = require('os');
 
+function collect(val, memo) {
+  if(!memo){
+    memo = [];
+  }
+  memo.push(val);
+  return memo;
+}
+
 //
 // Setup the Command-Line Interface.
 //
@@ -15,6 +23,7 @@ cli.usage('[options] ws://localhost')
    .option('-A, --amount <connections>', 'the amount of persistent connections to generate', parseInt, 10000)
    .option('-C, --concurrent <connections>', 'how many concurrent-connections per second', parseInt, 0)
    .option('-M, --messages <messages>', 'messages to be send per connection', parseInt, 1)
+   .option('-H, --header [header]', 'a header to pass to each connection', collect, [])
    .option('-P, --protocol <protocol>', 'WebSocket protocol version', parseInt, 13)
    .option('-B, --buffer <size>', 'size of the messages that are send', parseInt, 1024)
    .option('-W, --workers <cpus>', 'workers to be spawned', parseInt, os.cpus().length)
@@ -45,6 +54,22 @@ var cluster = require('cluster')
   , received = 0
   , robin = [];
 
+//
+// Process headers
+//
+var headers = {};
+cli.header.forEach(function(header){
+  var keyValue = header.split(':');
+  var key = keyValue[0];
+  var value = keyValue[1];
+  if(!key || !value){
+    console.warn('Header \'' +  + '\' is wrongly defined. A header should looks like \'key:value\'.');
+    return;
+  }
+  headers[key.trim()] = value.trim();
+});
+console.log(headers);
+
 cluster.setupMaster({
     exec: path.resolve(__dirname, '../mjolnir.js')
   , silent: false
@@ -54,7 +79,8 @@ cluster.setupMaster({
       : path.resolve(__dirname, '../generator.js'),
       cli.protocol,
       !!cli.masked,
-      !!cli.binary
+      !!cli.binary,
+      headers
     ]
 });
 
