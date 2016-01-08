@@ -1,6 +1,6 @@
 {
   "name": "thor-cosium-fork",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Thor is WebSocket benchmark utility",
   "main": "index.js",
   "scripts": {
