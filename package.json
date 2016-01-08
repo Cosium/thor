@@ -1,5 +1,5 @@
 {
-  "name": "thor",
+  "name": "thor-cosium-fork",
   "version": "1.0.0",
   "description": "Thor is WebSocket benchmark utility",
   "main": "index.js",
@@ -26,6 +26,6 @@
     "sugar": "git://github.com/bluesmoon/node-faststats.git"
   },
   "bin": {
-    "thor": "./bin/thor"
+    "thor-cosium-fork": "./bin/thor-cosium-fork"
   }
 }
