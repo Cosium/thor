@@ -1,8 +1,6 @@
 'use strict';
 
 var Stats = require('fast-stats').Stats
-  , colors = require('colors')
-  , sugar = require('sugar')
   , table = require('tab');
 
 /**
