@@ -12,10 +12,9 @@ var session = require(process.argv[2]);
 //
 // WebSocket connection details.
 //
-var masked = process.argv[4] === 'true'
-  , binary = process.argv[5] === 'true'
+var binary = process.argv[4] === 'true'
   , protocol = +process.argv[3] || 13
-  , headers = JSON.parse(process.argv[6]);
+  , headers = JSON.parse(process.argv[5]);
 
 process.on('message', function message(task) {
   var now = Date.now();
@@ -107,7 +106,7 @@ function write(socket, task, id, fn) {
 
     socket.send(data, {
       binary: binary,
-      mask: masked
+      mask: true
     }, function sending(err) {
       if (err) {
         process.send({ type: 'error', message: err.message, concurrent: --concurrent, id: id });
