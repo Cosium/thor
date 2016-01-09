@@ -14,19 +14,25 @@ function collect(val, memo) {
   return memo;
 }
 
+function parseInteger(val){
+  if(val){
+    return parseInt(val);
+  }
+}
+
 //
 // Setup the Command-Line Interface.
 //
 var cli = require('commander');
 
 cli.usage('[options] ws://localhost')
-   .option('-A, --amount <connections>', 'the amount of persistent connections to generate', parseInt, 10000)
-   .option('-C, --concurrent <connections>', 'how many concurrent-connections per second', parseInt, 0)
-   .option('-M, --messages <messages>', 'messages to be send per connection', parseInt, 1)
+   .option('-A, --amount <connections>', 'the amount of persistent connections to generate', parseInteger, 10000)
+   .option('-C, --concurrent <connections>', 'how many concurrent-connections per second', parseInteger, 0)
+   .option('-M, --messages <messages>', 'messages to be send per connection', parseInteger, 1)
    .option('-H, --header [header]', 'a header to pass to each connection', collect, [])
-   .option('-P, --protocol <protocol>', 'WebSocket protocol version', parseInt, 13)
-   .option('-B, --buffer <size>', 'size of the messages that are send', parseInt, 1024)
-   .option('-W, --workers <cpus>', 'workers to be spawned', parseInt, os.cpus().length)
+   .option('-P, --protocol <protocol>', 'WebSocket protocol version', parseInteger, 13)
+   .option('-B, --buffer <size>', 'size of the messages that are send', parseInteger, 1024)
+   .option('-W, --workers <cpus>', 'workers to be spawned', parseInteger, os.cpus().length)
    .option('-G, --generator <file>', 'custom message generators')
    .option('-M, --masked', 'send the messaged with a mask')
    .option('-b, --binary', 'send binary messages instead of utf-8')
@@ -68,7 +74,6 @@ cli.header.forEach(function(header){
   }
   headers[key.trim()] = value.trim();
 });
-console.log(headers);
 
 cluster.setupMaster({
     exec: path.resolve(__dirname, '../mjolnir.js')
@@ -80,7 +85,7 @@ cluster.setupMaster({
       cli.protocol,
       !!cli.masked,
       !!cli.binary,
-      headers
+      JSON.stringify(headers)
     ]
 });
 
